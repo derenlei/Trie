@@ -1,2 +1,2 @@
 # Trie
-A simple implementation of Trie
+A simple implementation of Trie in CPP
