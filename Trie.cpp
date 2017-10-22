@@ -4,39 +4,55 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include "Trie.h"
 
 using namespace std;
 
-struct Node {
-  string word;
-  map<string, Node*> children;
-  int weight;
-  int childrenNum;
-};
+Trie::Trie(){
+  head.word = "Root";
+  head.childrenNum = 0;
+  head.weight = -1;
+  max = head;
+}
 
-class Trie {
-    public:
-      Trie();
-      ~Trie();
-      
-      // Insert on word (subsentence) into the trie tree
-      void insertWord(string word);
-      // Insert complete sentence based on insertWord function
-      void insertSentence(vector<string> words);
-      // Build complte trie tree based on insertSentence function
-      void build_trie(vector< vector<string> > words, int length);
+Trie::~Trie();{
+  for (int i=0; i < gc.size(); i++) {
+    delete children[i];
+  }
+}
 
-      // Store all suffix into a map. Key is the weight of the last word in suffix
-      void storeSuffix(string prefix, map<int, string> map);
-      // print all suffix based on weight
-      void printSuffixList();
+// Insert on word (subsentence) into the trie tree
+void Trie::insertWord(string word, bool lastWord, int weight){
 
-      // Print node which has maximum children
-      void printMax();
-      
-    private:
-      Node head;
-      Node max;
-      // Used for deleting nodes
-      vector<Node*> gc;
-};
+}
+
+// Insert complete sentence based on insertWord function
+void Trie::insertSentence(vector<string> words){
+  bool lastWord = false;
+  for(int i = 1; i < words.size(); i++){
+    if(i == words.size() - 1) {
+      lastWord = true;
+      insertWord(words[i], lastword, atoi(words[0]));
+    }
+    else{ inserdWord(words[i], lastWord, atoi(words[0])); }
+  }
+}
+
+// Build complte trie tree based on insertSentence function
+void Trie::build_trie(vector< vector<string> > words, int length){
+
+}
+
+// Store all suffix into a map. Key is the weight of the last word in suffix
+void Trie::storeSuffix(string prefix, map<int, string> map){
+
+}
+// print all suffix based on weight
+void Trie::printSuffixList(){
+
+}
+
+// Print node which has maximum children
+void Trie::printMax(){
+  cout << max.word + " " + childrenNum << endl;
+}
