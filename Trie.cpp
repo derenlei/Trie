@@ -39,17 +39,26 @@ void Trie::insertSentence(vector<string> words){
 }
 
 // Build complte trie tree based on insertSentence function
-void Trie::build_trie(vector< vector<string> > words, int length){
-
+void Trie::build_trie(vector< vector<string> > sentences, int length){
+    for(int i = 0; i < length; i++){
+      insertSentence(sentences[i]);
+    }
 }
 
 // Store all suffix into a map. Key is the weight of the last word in suffix
-void Trie::storeSuffix(string prefix, map<int, string> map){
+void Trie::storeSuffix(string prefix, map<int, string, less<int>> map){
+  // TODO: divide prefix into words and store them in a vector
+
+  // TODO: find the node that contain the last word of the prefix
 
 }
-// print all suffix based on weight
-void Trie::printSuffixList(){
 
+// print all suffix based on weight
+void Trie::printSuffixList(string prefix, map<int, string, less<int>> map){
+  storeSuffix(prefix, map);
+  for(auto const& element: map){
+    cout << element.second << endl;
+  }
 }
 
 // Print node which has maximum children
