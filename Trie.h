@@ -23,7 +23,7 @@ class Trie {
 
       void build_trie(vector< vector<string> > sentences, int length);
       // print all suffix based on weight
-      void printSuffixList(string prefix, map<int, string, less<int>> map);
+      void printSuffixList(string prefix);
       // Print node which has maximum children
       void printMax();
 
@@ -34,7 +34,9 @@ class Trie {
       // Insert complete sentence based on insertWord function
       void insertSentence(vector<string> words);
       // Store all suffix into a map. Key is the weight of the last word in suffix
-      void storeSuffix(bool contain, string prefix, map<int, string, less<int>> map);
+      void storeSuffix(bool& contain, vector<string> prefix, map<int, string, less<int>>& sentenceMap);
+      void storeSuffixHelper(map<string, Node*> current_tree, map<int, string,
+                                          less<int>>& sentenceMap, String& sentence);
       // Used for deleting nodes
       vector<Node*> gc;
 };

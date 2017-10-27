@@ -67,24 +67,40 @@ void Trie::build_trie(vector< vector<string> > sentences){
     }
 }
 
-// TODO
-void Trie::storeSuffixHelper(map<string, Node*> current_tree, map<int, string, less<int>> map){
+// Store to map starts from current_tree and store in map
+void Trie::storeSuffixHelper(map<string, Node*> current_tree, map<int, string,
+                                    less<int>>& sentenceMap, String& sentence){
   if(current_tree.empty()) { return; }
-  String sentence = "";
   for(map<string, Node*>::iterator it = current_tree.begin(); it != current_tree.end(); it++){
-    sentence = sentence + it->first  + " ";
-    storeSuffixHelper(it->second->children, map);
+    // Case 1: last node
+    if(it->second->children.empty()){
+      sentence += it->first;
+      sentenceMap[it->second.weight] = sentence;
+      sentence = "";
+      return;
+    }
+    // case 2: not last node but is the end of one sentence
+    else if(it->second.weight != -1){
+      sentence += it->first;
+      sentenceMap[it->second.weight] = sentence;
+      return;
+    }
+    // case 3: not end of one sentence
+    else {
+      sentence = sentence + it->first  + " ";
+      storeSuffixHelper(it->second->children, sentenceMap, sentence);
+    }
   }
 
 }
 
 // Store all suffix into a map. Key is the weight of the last word in suffix
-void Trie::storeSuffix(bool contain, vector<string> prefix, map<int, string, less<int>> map){
+void Trie::storeSuffix(bool& contain, vector<string> prefix, map<int, string, less<int>>& sentenceMap){
   // Find the node that contain the last word of the prefix
   map<string, Node*> current_tree = head.children;
   map<string, Node*>::iterator it;
-  for(int i = 0; i < words.size(); i++){
-    string word = words[i];
+  for(int i = 0; i < prefix.size(); i++){
+    string word = prefix[i];
     if((it = current_tree.find(word)) == current_tree.end()){
       cout << "No Valid completion" << endl;
       contain = false;
@@ -92,12 +108,15 @@ void Trie::storeSuffix(bool contain, vector<string> prefix, map<int, string, les
     }
     current_tree = it->second->children;
   }
-
+  // Store suffix into sentenceMap
+  String sentence = "";
+  storeSuffixHelper(current_tree, sentenceMap, sentence);
 }
 
 // print all suffix based on weight
-void Trie::printSuffixList(string prefix, map<int, string, less<int>> map){
-  storeSuffix(prefix, map);
+void Trie::printSuffixList(string prefix){
+  map<int, string, less<int>> sentenceMap;
+  storeSuffix(prefix, sentenceMap);
   for(auto const& element: map){
     cout << element.second << endl;
   }
