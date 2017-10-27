@@ -5,6 +5,9 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <sstream>
+#include <algorithm>
+#include <iterator>
 #include "Trie.h"
 
 using namespace std;
@@ -68,8 +71,8 @@ void Trie::build_trie(vector< vector<string> > sentences){
 }
 
 // Store to map starts from current_tree and store in map
-void Trie::storeSuffixHelper(map<string, Node*> current_tree, map<int, string,
-                                    less<int>>& sentenceMap, String& sentence){
+void Trie::storeSuffixHelper(map<string, Node*> current_tree,
+  map<int, string, less<int>>& sentenceMap, String& sentence){
   if(current_tree.empty()) { return; }
   for(map<string, Node*>::iterator it = current_tree.begin(); it != current_tree.end(); it++){
     // Case 1: last node
@@ -114,11 +117,14 @@ void Trie::storeSuffix(bool& contain, vector<string> prefix, map<int, string, le
 }
 
 // print all suffix based on weight
-void Trie::printSuffixList(string prefix){
+void Trie::printSuffixList(vector<string> prefix){
   map<int, string, less<int>> sentenceMap;
-  storeSuffix(prefix, sentenceMap);
-  for(auto const& element: map){
-    cout << element.second << endl;
+  bool contain = true;
+  storeSuffix(contain, prefix, sentenceMap);
+  if(contain){
+    for(auto const& element: map){
+      cout << element.second << endl;
+    }
   }
 }
 

@@ -8,6 +8,9 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <iterator>
+#include <sstream>
+#include <algorithm>
 
 struct Node {
   string word;
@@ -21,9 +24,9 @@ class Trie {
       Trie();
       ~Trie();
 
-      void build_trie(vector< vector<string> > sentences, int length);
+      void build_trie(vector< vector<string> > sentences);
       // print all suffix based on weight
-      void printSuffixList(string prefix);
+      void printSuffixList(vector<string> prefix);
       // Print node which has maximum children
       void printMax();
 
