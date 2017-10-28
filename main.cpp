@@ -5,6 +5,7 @@
 #include <sstream>
 #include <algorithm>
 #include <iterator>
+#include <cstdlib>
 #include "Trie.h"
 
 using namespace std;
@@ -17,24 +18,24 @@ int main(){
     if (line.empty()) { break; }
     // Convert line into vector and add into sentences
     istringstream iss(line);
-    vector<string> sentence{istream_iterator<string>{iss},
-                  istream_iterator<string>{}};
+    vector<string> sentence(istream_iterator<string>{iss},
+                  istream_iterator<string>{});
     sentences.push_back(sentence);
     line = "";
   }
   // Build trie
-  Trie trie = new trie();
-  build_trie(sentences);
+  Trie trie;
+  trie.build_trie(sentences);
   // Input prefix
-  String prefix;
-  cin << prefix;
+  string prefix;
+  cin >> prefix;
   // Convert prefix into vector
   istringstream iss(prefix);
-  vector<string> prefixVector{istream_iterator<string>{iss},
-                istream_iterator<string>{}};
+  vector<string> prefixVector(istream_iterator<string>{iss},
+                istream_iterator<string>{});
   prefixVector.push_back(prefix);
   // Print result
-  printSuffixList(prefixVector);
-  printMax();
+  trie.printSuffixList(prefixVector);
+  trie.printMax();
   return 0;
 }

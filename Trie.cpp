@@ -8,6 +8,7 @@
 #include <sstream>
 #include <algorithm>
 #include <iterator>
+#include <cstdlib>
 #include "Trie.h"
 
 using namespace std;
@@ -19,9 +20,9 @@ Trie::Trie(){
   max = head;
 }
 
-Trie::~Trie();{
+Trie::~Trie(){
   for (int i=0; i < gc.size(); i++) {
-    delete children[i];
+    delete gc[i];
   }
 }
 
@@ -29,7 +30,7 @@ Trie::~Trie();{
 void Trie::insertSentence(vector<string> words){
 
   map<string, Node*> *current_tree = &head.children;
-  Node* currentParent = head;
+  Node* currentParent = &head;
   map<string, Node*>::iterator it;
 
   for(int i = 1; i < words.size(); i++){
@@ -37,7 +38,7 @@ void Trie::insertSentence(vector<string> words){
 
     if((it = current_tree->find(word)) != current_tree->end()){
       current_tree = &it->second->children;
-      currentParent = &it->second;
+      currentParent = it->second;
       continue;
     }
 
@@ -46,13 +47,13 @@ void Trie::insertSentence(vector<string> words){
       Node* newNode = new Node();
       newNode->word = word;
       newNode->childrenNum = 0;
-      if(i == words.size() - 1) { newNode->weight = atoi(words[0]); }
+      if(i == words.size() - 1) { newNode->weight = atoi(words[0].c_str()); }
       else { newNode->weight = -1; }
 
       // Add 1 to childrenNum of parent node
       currentParent->childrenNum += 1;
       // Check Max
-      if(max.childrenNum < currentParent->childrenNum) { max = currentParent; }
+      if(max.childrenNum < currentParent->childrenNum) { max = *currentParent; }
 
       (*current_tree)[word] = newNode;
       current_tree = &newNode->children;
@@ -72,20 +73,20 @@ void Trie::build_trie(vector< vector<string> > sentences){
 
 // Store to map starts from current_tree and store in map
 void Trie::storeSuffixHelper(map<string, Node*> current_tree,
-  map<int, string, less<int>>& sentenceMap, String& sentence){
+  map<int, string, less<int> >& sentenceMap, string& sentence){
   if(current_tree.empty()) { return; }
   for(map<string, Node*>::iterator it = current_tree.begin(); it != current_tree.end(); it++){
     // Case 1: last node
     if(it->second->children.empty()){
       sentence += it->first;
-      sentenceMap[it->second.weight] = sentence;
+      sentenceMap[it->second->weight] = sentence;
       sentence = "";
       return;
     }
     // case 2: not last node but is the end of one sentence
-    else if(it->second.weight != -1){
+    else if(it->second->weight != -1){
       sentence += it->first;
-      sentenceMap[it->second.weight] = sentence;
+      sentenceMap[it->second->weight] = sentence;
       return;
     }
     // case 3: not end of one sentence
@@ -98,7 +99,7 @@ void Trie::storeSuffixHelper(map<string, Node*> current_tree,
 }
 
 // Store all suffix into a map. Key is the weight of the last word in suffix
-void Trie::storeSuffix(bool& contain, vector<string> prefix, map<int, string, less<int>>& sentenceMap){
+void Trie::storeSuffix(bool& contain, vector<string> prefix, map<int, string, less<int> >& sentenceMap){
   // Find the node that contain the last word of the prefix
   map<string, Node*> current_tree = head.children;
   map<string, Node*>::iterator it;
@@ -112,23 +113,23 @@ void Trie::storeSuffix(bool& contain, vector<string> prefix, map<int, string, le
     current_tree = it->second->children;
   }
   // Store suffix into sentenceMap
-  String sentence = "";
+  string sentence = "";
   storeSuffixHelper(current_tree, sentenceMap, sentence);
 }
 
 // print all suffix based on weight
 void Trie::printSuffixList(vector<string> prefix){
-  map<int, string, less<int>> sentenceMap;
+  map<int, string, less<int> > sentenceMap;
   bool contain = true;
   storeSuffix(contain, prefix, sentenceMap);
   if(contain){
-    for(auto const& element: map){
-      cout << element.second << endl;
+    for(map<int, string, less<int> >::iterator it = sentenceMap.begin(); it != sentenceMap.end(); it++){
+      cout << it->second << endl;
     }
   }
 }
 
 // Print node which has maximum children
 void Trie::printMax(){
-  cout << max.word + " " + childrenNum << endl;
+  cout << max.word + " " << max.childrenNum << endl;
 }

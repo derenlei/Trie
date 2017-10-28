@@ -11,6 +11,9 @@
 #include <iterator>
 #include <sstream>
 #include <algorithm>
+#include <cstdlib>
+
+using namespace std;
 
 struct Node {
   string word;
@@ -37,9 +40,9 @@ class Trie {
       // Insert complete sentence based on insertWord function
       void insertSentence(vector<string> words);
       // Store all suffix into a map. Key is the weight of the last word in suffix
-      void storeSuffix(bool& contain, vector<string> prefix, map<int, string, less<int>>& sentenceMap);
+      void storeSuffix(bool& contain, vector<string> prefix, map<int, string, less<int> >& sentenceMap);
       void storeSuffixHelper(map<string, Node*> current_tree, map<int, string,
-                                          less<int>>& sentenceMap, String& sentence);
+                                          less<int> >& sentenceMap, string& sentence);
       // Used for deleting nodes
       vector<Node*> gc;
 };
