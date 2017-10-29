@@ -37,13 +37,21 @@ void Trie::insertSentence(vector<string> words){
     string word = words[i];
 
     if((it = current_tree->find(word)) != current_tree->end()){
+      if(i == words.size()-1) {
+        //cout << "Change weight for node: " << word << endl;
+        it->second->weight = atoi(words[0].c_str());
+      }
       current_tree = &it->second->children;
       currentParent = it->second;
+      //cout << "Current parent is " << currentParent->word << endl;
       continue;
     }
 
     if(it == current_tree->end()){
+      //cout << "Current parrent is " << currentParent->word << endl;
+
       // Create a new node for Trie
+      //cout << "Create new node for: " << word << endl;
       Node* newNode = new Node();
       newNode->word = word;
       newNode->childrenNum = 0;
@@ -51,14 +59,22 @@ void Trie::insertSentence(vector<string> words){
       else { newNode->weight = -1; }
 
       // Add 1 to childrenNum of parent node except head
+      //cout << "Add childNum for node: " << currentParent->word <<endl;
       currentParent->childrenNum += 1;
       head.childrenNum = -1;
       // Check Max
-      if(max->childrenNum == -1) {max = newNode; }
-      else if(max->childrenNum < currentParent->childrenNum) { max = currentParent; }
+      if(max->childrenNum == -1) {
+        //cout << "Change max from root to " << newNode->word << endl;
+        max = newNode;
+      }
+      else if(max->childrenNum < currentParent->childrenNum) {
+        //cout << "Change max from " << max->word << max->childrenNum << " to " << currentParent->word << currentParent->childrenNum << endl;
+        max = currentParent;
+      }
 
       (*current_tree)[word] = newNode;
       current_tree = &newNode->children;
+      currentParent = newNode;
       gc.push_back(newNode);
     }
   }
@@ -85,18 +101,28 @@ void Trie::storeSuffixHelper(map<string, Node*> current_tree,
       sentence += it->first;
       sentenceMap[it->second->weight] = sentence;
       //cout << "suffix:" << sentence << endl;
-      sentence = "";
+      //sentence = "";
     }
     // case 2: not last node but is the end of one sentence
     else if(it->second->weight != -1){
-      sentence += it->first;
+      sentence += it->first + " ";
       sentenceMap[it->second->weight] = sentence;
+      storeSuffixHelper(it->second->children, sentenceMap, sentence);
     }
     // case 3: not end of one sentence
     else {
       sentence = sentence + it->first  + " ";
       storeSuffixHelper(it->second->children, sentenceMap, sentence);
     }
+    // Remove last word from sentence
+    //cout << "Remove last word" << endl;
+    if(sentence[sentence.length()-1] == ' ') {
+      sentence = sentence.substr(0, sentence.length()-1);
+    }
+    while(sentence[sentence.length()-1] != ' ' && sentence != "") {
+      sentence = sentence.substr(0, sentence.length()-1);
+    }
+
   }
 
 }
