@@ -10,30 +10,48 @@
 
 using namespace std;
 
+vector<string> strToVec(string sentence){
+  vector<string> vec;
+  string element = "";
+  for(int i=0; i < sentence.length(); i++){
+    if(sentence[i] == ' '){
+      vec.push_back(element);
+      element = "";
+    }
+    else if (i == sentence.length() - 1){
+      element += sentence[i];
+      vec.push_back(element);
+    }
+    else{
+      element += sentence[i];
+    }
+  }
+  return vec;
+}
+
 int main(){
+
+  Trie trie;
   vector< vector<string> > sentences;
   string line;
   while (true) {
     getline(cin, line);
     if (line.empty()) { break; }
     // Convert line into vector and add into sentences
-    istringstream iss(line);
-    vector<string> sentence(istream_iterator<string>{iss},
-                  istream_iterator<string>{});
+    vector<string> sentence = strToVec(line);
     sentences.push_back(sentence);
     line = "";
   }
+
   // Build trie
-  Trie trie;
   trie.build_trie(sentences);
+
   // Input prefix
   string prefix;
-  cin >> prefix;
+  getline(cin, prefix);
+
   // Convert prefix into vector
-  istringstream iss(prefix);
-  vector<string> prefixVector(istream_iterator<string>{iss},
-                istream_iterator<string>{});
-  prefixVector.push_back(prefix);
+  vector<string> prefixVector = strToVec(prefix);
   // Print result
   trie.printSuffixList(prefixVector);
   trie.printMax();
